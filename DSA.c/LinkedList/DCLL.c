@@ -79,6 +79,59 @@ void InsertFirst(){
     }
     Display();
 }
+void InsertAnyPos() {
+    int position;
+    struct dcnode *p, *x = dhead, *y = NULL;
+    
+    printf("\nEnter the position to insert the node:");
+    scanf("%d", &position);
+
+    if (position < 1) {
+        printf("\nInvalid position!");
+        return;
+    }
+    p = (struct dcnode *)malloc(sizeof(struct dcnode));
+    p->num = data;
+    p->left = NULL;
+    p->right = NULL;
+
+    if (dhead == NULL) {
+        dhead = tail = p;
+        p->left = p->right = p; 
+    }
+    else if(position==1){
+        InsertFirst();
+        return;
+    }
+    else {
+        int data;
+        printf("\nEnter the value in Node:");
+        scanf("%d", &data);
+        for (int i = 1; i < position && x->right != dhead; i++) {
+            y = x;
+            x = x->right;
+        }
+
+        if (position > 1 && x == tail) {
+            p->left = tail;
+            tail->right = p;
+            p->right = dhead;
+            dhead->left = p;
+            tail = p;
+        } else {
+            p->left = y;
+            p->right = x;
+            x->left = p;
+            y->right = p;
+            
+        }
+    }
+
+    Display();
+}
+
+
+
 void InsertLast(){
     struct dcnode *p;
     int a;
@@ -102,67 +155,121 @@ void InsertLast(){
     Display();
 }
 
-void InsertAtPosition(int position) {
-    if (position < 1) {
-        printf("\nInvalid position!");
+
+
+void DeleteFirst(){
+    struct dcnode*x,*t=dhead;
+     if(dhead==NULL){
+        printf("\nList is Empty!");
         return;
     }
-
-    struct dcnode *p, *current;
-    int a;
-    int count = 1; // Initialize the node count to 1
-
-    printf("\nEnter the value in Node:");
-    scanf("%d", &a);
-
-    p = (struct dcnode *)malloc(sizeof(struct dcnode));
-    p->num = a;
-    p->left = NULL;
-    p->right = NULL;
-
-    if (dhead == NULL) {
-        // List is empty; this is the first node
-        dhead = tail = p;
-        p->left = p->right = p; // Circular structure
+    else if(dhead->right==dhead){
+        free(dhead);
+        dhead=NULL;
         return;
     }
-
-    current = dhead;
-
-    // Traverse the list to find the position
-    while (count < position - 1 && current->right != dhead) {
-        current = current->right;
-        count++;
+    else{
+        x=dhead;
+        while(x->right!=dhead){
+            x=x->right;
+        }
+     dhead=t->right;
+    x->right=dhead;
+    dhead->left=x;
+    free(t);
     }
-
-    if (count < position - 1) {
-        printf("\nPosition exceeds the length of the list!");
-        free(p); // Free the newly allocated node
+    Display();
+}
+void DeleteLast(){
+    struct dcnode*x,*y,*t=dhead;
+    if(dhead==NULL){
+        printf("\nList is Empty!");
         return;
     }
-
-    // Insert the new node at the desired position
-    p->left = current;
-    p->right = current->right;
-    current->right->left = p;
-    current->right = p;
-
-    if (position == 1) {
-        // Update dhead if inserting at the beginning
-        dhead = p;
+    else if(dhead->right==dhead){
+      free(dhead);
+      dhead=NULL;
+      return;
     }
-
-    if (position == count + 1) {
-        // Update tail if inserting at the end
-        tail = p;
+    else{
+        x=dhead;
+         while(x->right!=dhead){
+            y=x;
+            x=x->right;
+        }
+      y->right=dhead;
+      dhead->left=y;
+      free(x);
+    }
+    Display();
+}
+void DeleteAnyPos(){
+    struct dcnode *x,*y,*t;
+    int pos;
+    if(dhead==NULL){
+        printf("\nList is Empty!");
+        return;
+    }
+    else{
+    printf("\nEnter the Position:");
+    scanf("%d",&pos);
+    if(pos==1){
+        DeleteFirst();
+    }
+    else if(pos<1){
+        printf("\nInvalid Position!");
+        return ;
+    }
+    else{
+        x=dhead;
+        for(int i=0;i<pos-1;i++){
+            y=x;
+            x=x->right;
+            if (x == dhead) {
+            printf("\nPosition exceeds the length of the list!");
+            return;
+        }
+        }
+        t=x;
+        y->right=x->right;
+        x->right->left=y;
+        free(t);
+        
+    }
+    }
+    Display();
+}
+int WhatToDo(){
+int ch;
+    while(1){
+        printf("\n 1.Creation\n 2.Insert At First\n 3.Insert At Any Position\n 4.Insert Last\n 5.Delete First\n 6.Delete Any Position\n 7.Delete Last\n 8.Display\n 9.Exit");
+        printf("\nEnter Your Choice:");
+        scanf("%d",&ch);
+        switch(ch){
+            case 1:Creation();
+                   break;
+            case 2:InsertFirst();
+                   break;
+            case 3:InsertAnyPos();
+                   break;
+            case 4:InsertLast();
+                   break;
+            case 5:DeleteFirst();
+                   break;
+            case 6:DeleteAnyPos();
+                   break;
+            case 7:DeleteLast();
+                   break;
+            case 8:Display();
+                   break;
+            case 9:printf("\nExiting Program!");
+                   return 0;
+            default:printf("\nInvalid Option");
+        }
     }
 }
-
 int main(){
-Creation();
-Display();
-InsertFirst();
-InsertLast();
+WhatToDo();
 getch();
 return 0;
 }
