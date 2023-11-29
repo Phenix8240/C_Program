@@ -1,4 +1,5 @@
- #include<stdio.h>
+// Kruskal's Algorithm
+#include<stdio.h>
  #include<stdlib.h>
  #include<conio.h>
 
